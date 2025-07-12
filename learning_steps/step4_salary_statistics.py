@@ -1,35 +1,17 @@
-# Step 4: Salary statistics and summary analysis
 
+"""
+Step 4: Compute mean and median salary
+"""
 import pandas as pd
 
-# Define file path
-file_path = r"D:\\AI\\Job Market Data Analyzer\\output\\filtered_jobs.csv"
+def compute_salary_stats(df):
+    df["Salary Minimum"] = pd.to_numeric(df["Salary Minimum"], errors="coerce")
+    return df["Salary Minimum"].mean(), df["Salary Minimum"].median()
 
-# Read the filtered dataset
-df = pd.read_csv(file_path)
-
-# Remove rows without salary info (at least Salary Minimum)
-df_salary = df.dropna(subset=["Salary Minimum"]).copy()
-
-# Convert salary columns to numeric (if needed)
-df_salary["Salary Minimum"] = pd.to_numeric(df_salary["Salary Minimum"], errors="coerce")
-df_salary["Salary Maximum"] = pd.to_numeric(df_salary["Salary Maximum"], errors="coerce")
-
-# Compute statistics
-mean_salary_min = df_salary["Salary Minimum"].mean()
-median_salary_min = df_salary["Salary Minimum"].median()
-max_salary_min = df_salary["Salary Minimum"].max()
-min_salary_min = df_salary["Salary Minimum"].min()
-
-# Show statistics
-print("🔹 Salary Statistics (Minimum Salary):")
-print(f"Mean: {mean_salary_min:.2f}")
-print(f"Median: {median_salary_min:.2f}")
-print(f"Min: {min_salary_min:.2f}")
-print(f"Max: {max_salary_min:.2f}")
-
-# Count jobs per province
-province_counts = df_salary["Province/Territory"].value_counts()
-
-print("\n🔹 Number of jobs per province:")
-print(province_counts)
+if __name__ == "__main__":
+    from step3_filter_relevant_jobs import filter_relevant_jobs
+    from step2_clean_data import clean_data
+    from step1_load_data import load_data
+    df = filter_relevant_jobs(clean_data(load_data("data/job_postings_canada.csv")))
+    mean_salary, median_salary = compute_salary_stats(df)
+    print(f"✅ Mean: {mean_salary:.2f}, Median: {median_salary:.2f}")
