@@ -1,20 +1,17 @@
-# Step 6: Compute Variance and Standard Deviation of Minimum Salary
 
+"""
+Step 6: Compute variance and standard deviation
+"""
 import pandas as pd
 
-# Load filtered dataset
-file_path = r"D:\\AI\\Job Market Data Analyzer\\output\\filtered_jobs.csv"
-df = pd.read_csv(file_path)
+def compute_dispersion(df):
+    df["Salary Minimum"] = pd.to_numeric(df["Salary Minimum"], errors="coerce")
+    return df["Salary Minimum"].var(), df["Salary Minimum"].std()
 
-# Remove rows without Salary Minimum
-df_salary = df.dropna(subset=["Salary Minimum"]).copy()
-
-# Convert to numeric
-df_salary["Salary Minimum"] = pd.to_numeric(df_salary["Salary Minimum"], errors="coerce")
-
-# Compute statistics
-variance = df_salary["Salary Minimum"].var()
-std_dev = df_salary["Salary Minimum"].std()
-
-print("🔹 Variance of Minimum Salary:", round(variance, 2))
-print("🔹 Standard Deviation of Minimum Salary:", round(std_dev, 2))
+if __name__ == "__main__":
+    from step3_filter_relevant_jobs import filter_relevant_jobs
+    from step2_clean_data import clean_data
+    from step1_load_data import load_data
+    df = filter_relevant_jobs(clean_data(load_data("data/job_postings_canada.csv")))
+    var, std = compute_dispersion(df)
+    print(f"✅ Variance: {var:.2f}, Std Dev: {std:.2f}")
