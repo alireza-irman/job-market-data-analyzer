@@ -1,14 +1,14 @@
-# Step 2: Clean dataset by dropping rows without Job Title
 
+"""
+Step 2: Clean missing job titles
+"""
 import pandas as pd
 
-# Define file path
-file_path = r"D:\AI\Job Market Data Analyzer\data\job_postings_canada.csv"
+def clean_data(df):
+    return df.dropna(subset=["Job Title"]).copy()
 
-# Read the CSV file
-df = pd.read_csv(file_path)
-
-
-
-df_cleaned_salary = df.dropna(subset=["Salary Minimum"])
-print("Rows with Salary Minimum:", len(df_cleaned_salary))
+if __name__ == "__main__":
+    from step1_load_data import load_data
+    df = load_data("data/job_postings_canada.csv")
+    cleaned = clean_data(df)
+    print(f"✅ Cleaned dataset has {len(cleaned)} rows.")
