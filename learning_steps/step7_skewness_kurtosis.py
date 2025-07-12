@@ -1,20 +1,18 @@
-# Step 7: Compute Skewness and Kurtosis of Minimum Salary
 
+"""
+Step 7: Compute skewness and kurtosis
+"""
 import pandas as pd
+from scipy.stats import skew, kurtosis
 
-# Load filtered dataset
-file_path = r"D:\\AI\\Job Market Data Analyzer\\output\\filtered_jobs.csv"
-df = pd.read_csv(file_path)
+def compute_shape(df):
+    df["Salary Minimum"] = pd.to_numeric(df["Salary Minimum"], errors="coerce")
+    return skew(df["Salary Minimum"].dropna()), kurtosis(df["Salary Minimum"].dropna())
 
-# Remove rows without Salary Minimum
-df_salary = df.dropna(subset=["Salary Minimum"]).copy()
-
-# Convert to numeric
-df_salary["Salary Minimum"] = pd.to_numeric(df_salary["Salary Minimum"], errors="coerce")
-
-# Compute skewness and kurtosis
-skewness = df_salary["Salary Minimum"].skew()
-kurtosis = df_salary["Salary Minimum"].kurt()
-
-print("🔹 Skewness of Minimum Salary:", round(skewness, 2))
-print("🔹 Kurtosis of Minimum Salary:", round(kurtosis, 2))
+if __name__ == "__main__":
+    from step3_filter_relevant_jobs import filter_relevant_jobs
+    from step2_clean_data import clean_data
+    from step1_load_data import load_data
+    df = filter_relevant_jobs(clean_data(load_data("data/job_postings_canada.csv")))
+    s, k = compute_shape(df)
+    print(f"✅ Skewness: {s:.2f}, Kurtosis: {k:.2f}")
