@@ -1,30 +1,21 @@
-# Step 9: Normalize Minimum Salary to [0, 1] range
 
+"""
+Step 9: Normalize salaries using Min-Max scaling
+"""
 import pandas as pd
 
-# Load filtered dataset
-file_path = r"D:\\AI\\Job Market Data Analyzer\\output\\filtered_jobs.csv"
-df = pd.read_csv(file_path)
+def normalize_salaries(df):
+    df["Salary Minimum"] = pd.to_numeric(df["Salary Minimum"], errors="coerce")
+    s = df["Salary Minimum"].dropna()
+    df = df.loc[s.index]
+    df["Normalized"] = (s - s.min()) / (s.max() - s.min())
+    return df
 
-# Remove rows without Salary Minimum
-df_salary = df.dropna(subset=["Salary Minimum"]).copy()
-
-# Convert to numeric
-df_salary["Salary Minimum"] = pd.to_numeric(df_salary["Salary Minimum"], errors="coerce")
-
-# Compute min and max
-salary_min = df_salary["Salary Minimum"].min()
-salary_max = df_salary["Salary Minimum"].max()
-
-# Apply normalization
-df_salary["Normalized Salary"] = (df_salary["Salary Minimum"] - salary_min) / (salary_max - salary_min)
-
-# Show sample
-print("🔹 Sample normalized salaries:")
-print(df_salary[["Salary Minimum", "Normalized Salary"]].head())
-
-# Save to CSV
-output_path = r"D:\AI\Job Market Data Analyzer\output\normalized_salaries.csv"
-df_salary.to_csv(output_path, index=False)
-
-print("✅ Normalized salaries saved as 'normalized_salaries.csv'.")
+if __name__ == "__main__":
+    from step3_filter_relevant_jobs import filter_relevant_jobs
+    from step2_clean_data import clean_data
+    from step1_load_data import load_data
+    df = filter_relevant_jobs(clean_data(load_data("data/job_postings_canada.csv")))
+    df = normalize_salaries(df)
+    df.to_csv("output/normalized_salaries.csv", index=False)
+    print("✅ Normalized salaries saved.")
